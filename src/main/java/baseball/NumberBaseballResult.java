@@ -11,18 +11,6 @@ public class NumberBaseballResult {
         this.correct = correct;
     }
 
-    public void setStrike(int strike) {
-        this.strike = strike;
-    }
-
-    public void setBall(int ball) {
-        this.ball = ball;
-    }
-
-    public void setCorrect(boolean isCorrect) {
-        this.correct = isCorrect;
-    }
-
     public int getStrike() {
         return strike;
     }

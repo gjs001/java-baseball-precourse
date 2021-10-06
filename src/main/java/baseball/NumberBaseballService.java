@@ -16,10 +16,12 @@ public class NumberBaseballService {
         if (answer == null || visited == null) {
             setupNewGame();
         }
+        if (userAnswer.length() != GAME_LENGTH) {
+            return new NumberBaseballResult(0, 0, false);
+        }
         int strike = countStrike(userAnswer);
         int ball = countBall(userAnswer);
-        NumberBaseballResult result = new NumberBaseballResult(strike, ball, strike == 3);
-        return result;
+        return new NumberBaseballResult(strike, ball, strike == 3);
     }
 
     private void makeAnswer(int length) {
@@ -40,10 +42,7 @@ public class NumberBaseballService {
     }
 
     private boolean checkDuplicateNumber(int newNumber) {
-        if (visited[newNumber]) {
-            return true;
-        }
-        return false;
+        return visited[newNumber];
     }
 
     private int countStrike(String userAnswer) {
