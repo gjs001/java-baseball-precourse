@@ -14,8 +14,7 @@ public class CliGameView implements GameView {
     }
 
     @Override
-    public void showAnswer(NumberBaseballResult numberBasballResult) {
-
+    public void showAnswer(NumberBaseballResult numberBaseballResult) {
     }
 
     @Override
