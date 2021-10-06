@@ -6,22 +6,24 @@ public class NumberBaseballService {
     private final int GAME_LENGTH = 3;
     private StringBuilder answer;
     private boolean[] visited;
+    private boolean isAllowUnexpectedInput;
 
-    public void setupNewGame() {
+    public void setupNewGame(boolean isAllowUnexpectedInput) {
         visited = new boolean[10];
+        this.isAllowUnexpectedInput = isAllowUnexpectedInput;
         makeAnswer(GAME_LENGTH);
     }
 
     public NumberBaseballResult testUserAnswer(String userAnswer) {
         if (answer == null || visited == null) {
-            setupNewGame();
+            return new NumberBaseballResult(0, 0, false, true);
         }
-        if (userAnswer.length() != GAME_LENGTH) {
-            return new NumberBaseballResult(0, 0, false);
+        if (checkInputError(userAnswer)) {
+            return new NumberBaseballResult(0, 0, false, true);
         }
         int strike = countStrike(userAnswer);
         int ball = countBall(userAnswer);
-        return new NumberBaseballResult(strike, ball, strike == 3);
+        return new NumberBaseballResult(strike, ball, strike == 3, false);
     }
 
     private void makeAnswer(int length) {
@@ -77,5 +79,56 @@ public class NumberBaseballService {
             return 1;
         }
         return 0;
+    }
+
+    private boolean checkInputError(String userAnswer) {
+        if (userAnswer.length() != GAME_LENGTH) {
+            return true;
+        }
+        if (!isAllowUnexpectedInput && hasWrongChar(userAnswer)) {
+            return true;
+        }
+        return !isAllowUnexpectedInput && hasSameNumber(userAnswer);
+    }
+
+    private boolean hasWrongChar(String userAnswer) {
+        boolean result = false;
+        for (int ch = 0; ch < '1'; ch++) {
+            result |= checkWrongChar(userAnswer, ch);
+        }
+        for (int ch = '9' + 1; ch < 256; ch++) {
+            result |= checkWrongChar(userAnswer, ch);
+        }
+        return result;
+    }
+
+    private boolean checkWrongChar(String userAnswer, int ch) {
+        int index = userAnswer.indexOf(ch);
+        return index != -1;
+    }
+
+    private boolean hasSameNumber(String userAnswer) {
+        boolean result = false;
+        for (int ch = '1'; ch <= '9'; ch++) {
+            result |= countSameNumber(userAnswer, ch);
+        }
+        return result;
+    }
+
+    private boolean countSameNumber(String userAnswer, int ch) {
+        boolean result = false;
+        int[] countMap = new int[10];
+        for (int index = 0; index < GAME_LENGTH; index++) {
+            countMap[userAnswer.charAt(index) - '0']++;
+        }
+
+        for (int count : countMap) {
+            result |= checkOverTwo(count);
+        }
+        return result;
+    }
+
+    private boolean checkOverTwo(int count) {
+        return count > 1;
     }
 }

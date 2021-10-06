@@ -26,7 +26,7 @@ public class GameController {
     }
 
     private int playGame() {
-        numberBaseballService.setupNewGame();
+        numberBaseballService.setupNewGame(false);
         boolean isCorrectAnswer = false;
         while (!isCorrectAnswer) {
             isCorrectAnswer = doUserInteraction();

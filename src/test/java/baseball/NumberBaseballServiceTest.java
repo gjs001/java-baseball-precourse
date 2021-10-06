@@ -17,7 +17,7 @@ public class NumberBaseballServiceTest {
 
     @Test
     void setupNewGame_AfterSetup() {
-        numberBaseballService.setupNewGame();
+        numberBaseballService.setupNewGame(true);
         assertThat(numberBaseballService)
                 .as("setup operation fail")
                 .hasNoNullFieldsOrProperties();
@@ -39,7 +39,7 @@ public class NumberBaseballServiceTest {
     @Test
     void testUserAnswer_UnexpectedNumberUserAnswer() {
         String userAnswer = "0#!";
-        numberBaseballService.setupNewGame();
+        numberBaseballService.setupNewGame(false);
         NumberBaseballResult result = numberBaseballService.testUserAnswer(userAnswer);
         assertThat(result.getStrike())
                 .as("check strike, %d", result.getStrike())
@@ -52,6 +52,10 @@ public class NumberBaseballServiceTest {
         assertThat(result.isCorrect())
                 .as("check correct, %b", result.isCorrect())
                 .isEqualTo(false);
+
+        assertThat(result.isError())
+                .as("check correct, %b", result.isError())
+                .isEqualTo(true);
     }
 
     @Test
@@ -59,7 +63,7 @@ public class NumberBaseballServiceTest {
         String userAnswer1 = "123";
         String userAnswer2 = "456";
         String userAnswer3 = "789";
-        numberBaseballService.setupNewGame();
+        numberBaseballService.setupNewGame(true);
 
         NumberBaseballResult result1 = numberBaseballService.testUserAnswer(userAnswer1);
         NumberBaseballResult result2 = numberBaseballService.testUserAnswer(userAnswer2);
@@ -72,7 +76,7 @@ public class NumberBaseballServiceTest {
     @Test
     void testUserAnswer_CanFindAnswer() {
         StringBuilder userAnswer = new StringBuilder("000");
-        numberBaseballService.setupNewGame();
+        numberBaseballService.setupNewGame(true);
         for (int i = 0; i < 3; i++) {
             findCorrectAnswerAtIndex(userAnswer, i);
         }
@@ -99,10 +103,7 @@ public class NumberBaseballServiceTest {
     }
 
     private boolean checkNumberIsNewStrike(String userAnswer, int index) {
-        if (numberBaseballService.testUserAnswer(userAnswer.toString()).getStrike() == index + 1) {
-            return true;
-        }
-        return false;
+        return numberBaseballService.testUserAnswer(userAnswer).getStrike() == index + 1;
     }
 
     @AfterEach

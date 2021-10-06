@@ -18,15 +18,11 @@ public class CliGameView implements GameView {
         StringBuilder message = new StringBuilder();
         int strike = numberBaseballResult.getStrike();
         int ball = numberBaseballResult.getBall() - strike;
-        if (strike > 0) {
-            message.append(strike + "스트라이크 ");
+        if (numberBaseballResult.isError()) {
+            showWrongInputMessage(numberBaseballResult.isError());
+            return;
         }
-        if (ball > 0) {
-            message.append(ball + "볼 ");
-        }
-        if (strike == 0 && ball == 0) {
-            message.append("낫싱");
-        }
+        makeMessage(message, strike, ball);
         System.out.println(message);
     }
 
@@ -42,5 +38,23 @@ public class CliGameView implements GameView {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private void showWrongInputMessage(boolean isError) {
+        if (isError) {
+           System.out.println("[ERROR] 잘못된 입력입니다.");
+        }
+    }
+
+    private void makeMessage(StringBuilder message, int strike, int ball) {
+        if (strike > 0) {
+            message.append(strike + "스트라이크 ");
+        }
+        if (ball > 0) {
+            message.append(ball + "볼 ");
+        }
+        if (strike == 0 && ball == 0) {
+            message.append("낫싱");
+        }
     }
 }
