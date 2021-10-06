@@ -13,6 +13,9 @@ public class NumberBaseballService {
     }
 
     public NumberBaseballResult testUserAnswer(String userAnswer) {
+        if (answer == null || visited == null) {
+            setupNewGame();
+        }
         int strike = countStrike(userAnswer);
         int ball = countBall(userAnswer);
         NumberBaseballResult result = new NumberBaseballResult(strike, ball, strike == 3);
@@ -32,7 +35,7 @@ public class NumberBaseballService {
         while (checkDuplicateNumber(newNumber)) {
             newNumber = Randoms.pickNumberInRange(1, 9);
         }
-
+        visited[newNumber] = true;
         return newNumber;
     }
 
@@ -61,13 +64,16 @@ public class NumberBaseballService {
     private int countBall(String userAnswer) {
         int ball = 0;
         for (int index = 0; index < GAME_LENGTH; index++) {
-            int digit = userAnswer.charAt(index);
+            int digit = userAnswer.charAt(index) - '0';
             ball += getAdditionalBallIfNumberIsInUserAnswer(digit);
         }
         return ball;
     }
 
     private int getAdditionalBallIfNumberIsInUserAnswer(int digit) {
+        if (digit <= 0 || digit >= 10) {
+            return 0;
+        }
         if (visited[digit]) {
             return 1;
         }
